@@ -6,9 +6,18 @@ namespace Domain.Interfaces
 {
     public interface IUnitOfWork
     {
+        public IAnswerRepository Answers { get; }
         public ICourseRepository Courses { get; }
         public IChapterRepository Chapters { get; }
+        public IEnrolledCourseRepository Enrolled { get; }
+        public IExamAttemptRepository ExamAttempts { get; }
+        public IExamQuestionAnswerRepository ExamQuestionAnswers { get; }
+        public IExamRepository Exams { get; }
+        public IQuestionRepository Questions { get; }
+        public IReviewRepository Reviews { get; }
+        public IRoleRepository Roles { get; }
         public IUserRepository Users { get; }
+        public IUserRoleRepository UserRoles { get; }
         Task SaveChangesAsync();
     }
 }

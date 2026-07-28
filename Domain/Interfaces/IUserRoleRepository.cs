@@ -7,5 +7,7 @@ namespace Domain.Interfaces
 {
     public interface IUserRoleRepository : IGenericRepository<UserRole>
     {
+        Task DeleteCompositeAsync(int userId, int roleId);
+        Task<UserRole> GetByCompositeIdAsync(int userId, int roleId);
     }
 }

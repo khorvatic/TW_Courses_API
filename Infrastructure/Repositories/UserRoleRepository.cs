@@ -31,9 +31,23 @@ namespace Infrastructure.Repositories
             }
         }
 
+        public async Task DeleteCompositeAsync(int userId, int roleId)
+        {
+            var userRole = await _context.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == roleId);
+            if (userRole != null)
+            {
+                _context.UserRoles.Remove(userRole);
+            }
+        }
+
         public async Task<IEnumerable<UserRole>> GetAllAsync()
         {
             return await _context.UserRoles.ToListAsync();
+        }
+
+        public async Task<UserRole> GetByCompositeIdAsync(int userId, int roleId)
+        {
+            return await _context.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == roleId);
         }
 
         public async Task<UserRole> GetByIdAsync(int id)

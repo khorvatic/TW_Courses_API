@@ -41,6 +41,11 @@ namespace Infrastructure.Repositories
             return await _context.Courses.FindAsync(id);
         }
 
+        public async Task<Course?> GetCourseByNameAsync(string name)
+        {
+            return await _context.Courses.FirstOrDefaultAsync(c => c.Name == name);
+        }
+
         public void Update(Course entity)
         {
             _context.Courses.Update(entity);

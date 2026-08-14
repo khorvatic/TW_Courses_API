@@ -12,7 +12,7 @@ namespace Infrastructure.Repositories
         public IAnswerRepository Answers { get; private set; }
         public ICourseRepository Courses { get; private set; }
         public IChapterRepository Chapters { get; private set; }
-        public IEnrolledCourseRepository Enrolled { get; private set; }
+        public IEnrolledCourseRepository EnrolledCourses { get; private set; }
         public IExamAttemptRepository ExamAttempts { get; private set; }
         public IExamQuestionAnswerRepository ExamQuestionAnswers { get; private set; }
         public IExamRepository Exams { get; private set; }
@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories
             Users = new UserRepository(_context);
             Chapters = new ChapterRepository(_context);
             Answers = new AnswerRepository(_context);
-            Enrolled = new EnrolledCourseRepository(_context);
+            EnrolledCourses = new EnrolledCourseRepository(_context);
             ExamAttempts = new ExamAttemptRepository(_context);
             ExamQuestionAnswers = new ExamQuestionAnswerRepository(_context);
             Exams = new ExamRepository(_context);

@@ -36,6 +36,11 @@ namespace Infrastructure.Repositories
             return await _context.Chapters.ToListAsync();
         }
 
+        public async Task<IEnumerable<Chapter>> GetByCourseIdAsync(int courseId)
+        {
+            return await _context.Chapters.Where(c => c.CourseId == courseId).ToListAsync();
+        }
+
         public async Task<Chapter> GetByIdAsync(int id)
         {
             return await _context.Chapters.FindAsync(id);

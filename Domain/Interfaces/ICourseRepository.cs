@@ -7,5 +7,6 @@ namespace Domain.Interfaces
 {
     public interface ICourseRepository : IGenericRepository<Course>
     {
+        Task<Course?> GetCourseByNameAsync(string name);
     }
 }

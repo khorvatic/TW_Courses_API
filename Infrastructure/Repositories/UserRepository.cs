@@ -24,7 +24,9 @@ namespace Infrastructure.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users
+                .Include(u => u.Reviews)
+                .FirstOrDefaultAsync(u => u.Id == id);
             if (user != null)
             {
                 _context.Users.Remove(user);
@@ -33,12 +35,47 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                .Include(u => u.Reviews)
+                .ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users
+                .Include(u => u.Reviews)
+                .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users
+                .Include(u => u.Reviews)
+                .FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<IEnumerable<User>> GetUsersByFullNameAsync(string name, string surname)
+        {
+            return await _context.Users
+                .Include(u => u.Reviews)
+                .Where(u => u.Name == name && u.Surname == surname)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetUsersByNameAsync(string name)
+        {
+            return await _context.Users
+                .Include(u => u.Reviews)
+                .Where(u => u.Name == name)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetUsersBySurnameAsync(string surname)
+        {
+            return await _context.Users
+                .Include(u => u.Reviews)
+                .Where(u => u.Surname == surname)
+                .ToListAsync();
         }
 
         public void Update(User entity)

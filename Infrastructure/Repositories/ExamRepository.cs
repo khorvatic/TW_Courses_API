@@ -40,6 +40,11 @@ namespace Infrastructure.Repositories
             return await _context.Exams.FindAsync(id);
         }
 
+        public async Task<Exam> GetByTitleAsync(string title)
+        {
+            return await _context.Exams.FirstOrDefaultAsync(e => e.Title == title);
+        }
+
         public void Update(Exam entity)
         {
             _context.Exams.Update(entity);

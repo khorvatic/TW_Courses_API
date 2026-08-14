@@ -71,6 +71,7 @@ namespace Infrastructure.Data
                 .WithOne(ec => ec.User)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
             // --- Course ---
             modelBuilder.Entity<Course>()
                 .HasMany(c => c.Chapters)

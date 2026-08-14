@@ -9,7 +9,7 @@ namespace Domain.Interfaces
         public IAnswerRepository Answers { get; }
         public ICourseRepository Courses { get; }
         public IChapterRepository Chapters { get; }
-        public IEnrolledCourseRepository Enrolled { get; }
+        public IEnrolledCourseRepository EnrolledCourses { get; }
         public IExamAttemptRepository ExamAttempts { get; }
         public IExamQuestionAnswerRepository ExamQuestionAnswers { get; }
         public IExamRepository Exams { get; }

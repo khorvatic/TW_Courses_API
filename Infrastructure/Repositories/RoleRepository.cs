@@ -41,6 +41,11 @@ namespace Infrastructure.Repositories
             return await _context.Roles.FindAsync(id);
         }
 
+        public async Task<Role> GetRoleByNameAsync(string name)
+        {
+            return await _context.Roles.FirstOrDefaultAsync(r => r.Name == name);
+        }
+
         public void Update(Role entity)
         {
             _context.Roles.Update(entity);

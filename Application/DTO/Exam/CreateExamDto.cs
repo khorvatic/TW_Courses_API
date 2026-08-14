@@ -10,6 +10,6 @@ namespace Application.DTO.Exam
         public string Title { get; set; }
         public TimeSpan AllotedTime { get; set; }
         public int CourseId { get; set; }
-        public ICollection<QuestionDto> Questions { get; set; }
+        public ICollection<CreateQuestionDto> Questions { get; set; }
     }
 }

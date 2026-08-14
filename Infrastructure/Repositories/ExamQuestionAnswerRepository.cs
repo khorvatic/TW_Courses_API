@@ -60,5 +60,28 @@ namespace Infrastructure.Repositories
         {
             _context.ExamQuestionAnswers.Update(entity);
         }
+
+        public async Task<IEnumerable<ExamQuestionAnswer>> GetAllForAnswerIdAsync(int answerId)
+        {
+            return await _context.ExamQuestionAnswers
+                .Where(eqa => eqa.AnswerId == answerId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ExamQuestionAnswer>> GetAllForQuestionIdAsync(int questionId)
+        {
+            return await _context.ExamQuestionAnswers
+                .Where(eqa => eqa.QuestionId == questionId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ExamQuestionAnswer>> GetAllForAttemptIdAsync(int attemptId)
+        {
+            return await _context.ExamQuestionAnswers
+                .Where(eqa => eqa.AttemptId == attemptId)
+                .Include(eqa => eqa.Answer)
+                .Include(eqa => eqa.Question)
+                .ToListAsync();
+        }
     }
 }

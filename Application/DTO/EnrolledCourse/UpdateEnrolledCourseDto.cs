@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Application.DTO.EnrolledCourse
 {
-    public class CreateEnrolledCourseDto
+    public class UpdateEnrolledCourseDto
     {
-        public int CourseId { get; set; }
-        public int UserId { get; set; }
+        public bool Completed { get; set; }
     }
 }

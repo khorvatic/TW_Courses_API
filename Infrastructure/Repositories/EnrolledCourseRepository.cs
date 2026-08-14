@@ -35,9 +35,30 @@ namespace Infrastructure.Repositories
             return await _courseContext.EnrolledCourses.ToListAsync();
         }
 
+        public async Task<IEnumerable<EnrolledCourse>> GetByCourseIdAsync(int courseId)
+        {
+            return await _courseContext.EnrolledCourses
+                .Where(ec => ec.CourseId == courseId)
+                .ToListAsync();
+        }
+
         public async Task<EnrolledCourse> GetByIdAsync(int id)
         {
             return await _courseContext.EnrolledCourses.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<EnrolledCourse>> GetByUserIdAndCourseIdAsync(int userId, int courseId)
+        {
+            return await _courseContext.EnrolledCourses
+                .Where(ec => ec.UserId == userId && ec.CourseId == courseId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<EnrolledCourse>> GetByUserIdAsync(int userId)
+        {
+            return await _courseContext.EnrolledCourses
+                .Where(ec => ec.UserId == userId)
+                .ToListAsync();
         }
 
         public void Update(EnrolledCourse entity)

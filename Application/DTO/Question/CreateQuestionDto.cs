@@ -10,6 +10,6 @@ namespace Application.DTO.Question
     {
         public QuestionType Type { get; set; }
         public int ExamId { get; set; }
-        public ICollection<AnswerDto> Answers { get; set; }
+        public ICollection<CreateAnswerDto> Answers { get; set; }
     }
 }

@@ -35,9 +35,23 @@ namespace Infrastructure.Repositories
             return await _context.ExamAttempts.ToListAsync();
         }
 
+        public async Task<IEnumerable<ExamAttempt>> GetByExamIdAsync(int examId)
+        {
+            return await _context.ExamAttempts
+                .Where(ea => ea.ExamId == examId)
+                .ToListAsync();
+        }
+
         public async Task<ExamAttempt> GetByIdAsync(int id)
         {
             return await _context.ExamAttempts.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<ExamAttempt>> GetByUserIdAsync(int userId)
+        {
+            return await _context.ExamAttempts
+                .Where(ea => ea.UserId == userId)
+                .ToListAsync();
         }
 
         public void Update(ExamAttempt entity)

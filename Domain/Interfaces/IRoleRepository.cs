@@ -7,5 +7,6 @@ namespace Domain.Interfaces
 {
     public interface IRoleRepository : IGenericRepository<Role>
     {
+        Task<Role> GetRoleByNameAsync(string name);
     }
 }

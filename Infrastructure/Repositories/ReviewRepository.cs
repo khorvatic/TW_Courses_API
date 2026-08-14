@@ -41,6 +41,16 @@ namespace Infrastructure.Repositories
             return await _context.Reviews.FindAsync(id);
         }
 
+        public async Task<IEnumerable<Review>> GetReviewsByCourseIdAsync(int courseId)
+        {
+            return await _context.Reviews.Where(r => r.CourseId == courseId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Review>> GetReviewsByUserIdAsync(int userId)
+        {
+            return await _context.Reviews.Where(r => r.UserId == userId).ToListAsync();
+        }
+
         public void Update(Review entity)
         {
             _context.Reviews.Update(entity);

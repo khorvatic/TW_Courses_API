@@ -7,5 +7,6 @@ namespace Domain.Interfaces
 {
     public interface IChapterRepository : IGenericRepository<Chapter>
     {
+        Task<IEnumerable<Chapter>> GetByCourseIdAsync(int courseId);
     }
 }

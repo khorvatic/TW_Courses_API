@@ -1,4 +1,6 @@
-﻿using Application.DTO.Exam;
+﻿using Application.DTO.Answer;
+using Application.DTO.Exam;
+using Application.DTO.Question;
 using Application.Interfaces;
 using Domain.Interfaces;
 using Domain.Models;
@@ -20,14 +22,45 @@ namespace Application.Services
         public async Task<ExamDto> CreateExamAsync(CreateExamDto dto)
         {
             var exam = await _unitOfWork.Exams.GetByTitleAsync(dto.Title);
-            if (exam == null) throw new ArgumentException("Exam with the same title already exists.");
+            if (exam != null) throw new ArgumentException("Exam with the same title already exists.");
 
-            var newExam = new Exam
+            exam = new Exam
             {
                 Title = dto.Title,
                 AllotedTime = dto.AllotedTime,
                 CourseId = dto.CourseId,
-                Questions = dto.Questions....
+                Questions = dto.Questions.Select(q => new Question
+                {
+                    Type = q.Type,
+                    ExamId = q.ExamId,
+                    Answers = q.Answers.Select(a => new Answer
+                    {
+                        Option = a.Option,
+                        Correct = a.Correct,
+                        QuestionId = a.QuestionId,
+                    }).ToList()
+                }).ToList()
+            };
+
+            await _unitOfWork.Exams.AddAsync(exam);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ExamDto
+            {
+                Id = exam.Id,
+                Title = exam.Title,
+                AllotedTime = exam.AllotedTime,
+                CourseId = exam.CourseId,
+                Questions = exam.Questions.Select(q => new QuestionDto
+                {
+                    Type = q.Type,
+                    ExamId = q.ExamId,
+                    Answers = q.Answers.Select(a => new AnswerDto
+                    {
+                        Option = a.Option,
+                        QuestionId = a.QuestionId,
+                    }).ToList()
+                }).ToList()
             };
         }
 
@@ -35,27 +68,122 @@ namespace Application.Services
         {
             var exams = await _unitOfWork.Exams.GetAllAsync();
 
-            return exams.Select
+            return exams.Select(x => new ExamDto {
+                Id = x.Id,
+                Title = x.Title,
+                AllotedTime = x.AllotedTime,
+                CourseId = x.CourseId,
+                Questions = x.Questions.Select(q => new QuestionDto
+                {
+                    Type = q.Type,
+                    ExamId = q.ExamId,
+                    Answers = q.Answers.Select(a => new AnswerDto
+                    {
+                        Option = a.Option,
+                        QuestionId = a.QuestionId,
+                    }).ToList()
+                }).ToList()
+            });
         }
 
-        public Task<ExamDto> GetExamByIdAsync(int id)
+        public async Task<ExamDto> GetExamByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var exam = await _unitOfWork.Exams.GetByIdAsync(id);
+            if (exam == null) throw new ArgumentException("Exam with that ID not found.");
+
+            return new ExamDto
+            {
+                Id = exam.Id,
+                Title = exam.Title,
+                AllotedTime = exam.AllotedTime,
+                CourseId = exam.CourseId,
+                Questions = exam.Questions.Select(q => new QuestionDto
+                {
+                    Type = q.Type,
+                    ExamId = q.ExamId,
+                    Answers = q.Answers.Select(a => new AnswerDto
+                    {
+                        Option = a.Option,
+                        QuestionId = a.QuestionId,
+                    }).ToList()
+                }).ToList()
+            };
         }
 
-        public Task<IEnumerable<ExamDto>> GetExamsByCourseIdAsync(int courseId)
+        public async Task<IEnumerable<ExamDto>> GetExamsByCourseIdAsync(int courseId)
         {
-            throw new NotImplementedException();
+            var exams = await _unitOfWork.Exams.GetByCourseIdAsync(courseId);
+            if (exams == null || !exams.Any()) 
+                throw new ArgumentException("No exams found for that course.");
+
+            return exams.Select(x => new ExamDto
+            {
+                Id = x.Id,
+                Title = x.Title,
+                AllotedTime = x.AllotedTime,
+                CourseId = x.CourseId,
+                Questions = x.Questions.Select(q => new QuestionDto
+                {
+                    Type = q.Type,
+                    ExamId = q.ExamId,
+                    Answers = q.Answers.Select(a => new AnswerDto
+                    {
+                        Option = a.Option,
+                        QuestionId = a.QuestionId,
+                    }).ToList()
+                }).ToList()
+            });
         }
 
-        public Task RemoveExamAsync(int id)
+        public async Task RemoveExamAsync(int id)
         {
-            throw new NotImplementedException();
+            var exam = await _unitOfWork.Exams.GetByIdAsync(id);
+            if (exam == null) throw new ArgumentException("Exam with that ID not found.");
+
+            await _unitOfWork.Exams.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public Task<ExamDto> UpdateExamAsync(int id, CreateExamDto dto)
+        public async Task<ExamDto> UpdateExamAsync(int id, CreateExamDto dto)
         {
-            throw new NotImplementedException();
+            var exam = await _unitOfWork.Exams.GetByIdAsync(id);
+            if (exam == null) throw new ArgumentException("Exam with that ID not found.");
+
+            exam.Title = dto.Title;
+            exam.AllotedTime = dto.AllotedTime;
+            exam.CourseId = dto.CourseId;
+            exam.Questions = dto.Questions.Select(q => new Question
+            {
+                Type = q.Type,
+                ExamId = q.ExamId,
+                Answers = q.Answers.Select(a => new Answer
+                {
+                    Option = a.Option,
+                    Correct = a.Correct,
+                    QuestionId = a.QuestionId,
+                }).ToList()
+            }).ToList();
+
+            _unitOfWork.Exams.Update(exam);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ExamDto
+            {
+                Id = exam.Id,
+                Title = exam.Title,
+                AllotedTime = exam.AllotedTime,
+                CourseId = exam.CourseId,
+                Questions = exam.Questions.Select(q => new QuestionDto
+                {
+                    Type = q.Type,
+                    ExamId = q.ExamId,
+                    Answers = q.Answers.Select(a => new AnswerDto
+                    {
+                        Option = a.Option,
+                        QuestionId = a.QuestionId,
+                    }).ToList()
+                }).ToList()
+            };
         }
     }
 }

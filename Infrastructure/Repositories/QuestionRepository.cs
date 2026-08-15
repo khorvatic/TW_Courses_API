@@ -33,12 +33,32 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Question>> GetAllAsync()
         {
-            return await _context.Questions.ToListAsync();
+            return await _context.Questions
+                .Include(q => q.Answers)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Question>> GetByExamIdAsync(int examId)
+        {
+            return await _context.Questions
+                .Include(q => q.Answers)
+                .Where(q => q.ExamId == examId)
+                .ToListAsync();
         }
 
         public async Task<Question> GetByIdAsync(int id)
         {
-            return await _context.Questions.FindAsync(id);
+            return await _context.Questions
+                .Include(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Id == id);
+        }
+
+        public async Task<IEnumerable<Question>> GetByTypeAsync(QuestionType type)
+        {
+            return await _context.Questions
+                .Include(q => q.Answers)
+                .Where(q => q.Type == type)
+                .ToListAsync();
         }
 
         public void Update(Question entity)

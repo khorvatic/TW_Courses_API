@@ -4,6 +4,7 @@ using Domain.Interfaces;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.Xml;
 using System.Text;
 
 namespace Application.Services
@@ -19,6 +20,10 @@ namespace Application.Services
 
         public async Task<ReviewDto> CreateReviewAsync(CreateReviewDto createReviewDto, int userId)
         {
+            var enrolledInCourse = await _unitOfWork.EnrolledCourses.GetByUserIdAsync(userId);
+            if (!enrolledInCourse.Any(ec => ec.CourseId == createReviewDto.CourseId))
+                throw new ArgumentException("User has not enrolled in this course and thus can't submit a review.");
+
             var existingReviews = await _unitOfWork.Reviews.GetReviewsByCourseIdAsync(createReviewDto.CourseId);
             if (existingReviews.Any(r => r.UserId == userId))
                 throw new InvalidOperationException("User has already submitted a review for this course.");

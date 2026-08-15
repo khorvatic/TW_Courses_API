@@ -1,0 +1,170 @@
+﻿using Application.DTO.Answer;
+using Application.DTO.Question;
+using Application.Interfaces;
+using Domain.Interfaces;
+using Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Application.Services
+{
+    public class QuestionService : IQuestionService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public QuestionService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<QuestionDto> CreateQuestionAsync(CreateQuestionDto dto)
+        {
+            var question = new Question
+            {
+                Type = dto.Type,
+                ExamId = dto.ExamId,
+                Answers = dto.Answers.Select(a => new Answer
+                {
+                    Correct = a.Correct,
+                    Option = a.Option
+                }).ToList()
+            };
+
+            await _unitOfWork.Questions.AddAsync(question);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new QuestionDto
+            {
+                Id = question.Id,
+                Type = question.Type,
+                ExamId = question.ExamId,
+                Answers = question.Answers.Select(a => new AnswerDto
+                {
+                    Id = a.Id,
+                    QuestionId = a.QuestionId,
+                    Option = a.Option
+                }).ToList()
+            };
+        }
+
+        public async Task DeleteQuestionAsync(int id)
+        {
+            var question = await _unitOfWork.Questions.GetByIdAsync(id);
+            if (question == null)
+                throw new ArgumentException("Question not found");
+
+            await _unitOfWork.Questions.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<QuestionDto>> GetAllQuestionsAsync()
+        {
+            var questions = await _unitOfWork.Questions.GetAllAsync();
+
+            return questions.Select(q => new QuestionDto
+            {
+                Id = q.Id,
+                Type = q.Type,
+                ExamId = q.ExamId,
+                Answers = q.Answers.Select(a => new AnswerDto
+                {
+                    Id = a.Id,
+                    QuestionId = a.QuestionId,
+                    Option = a.Option
+                }).ToList()
+            });
+        }
+
+        public async Task<QuestionDto> GetQuestionByIdAsync(int id)
+        {
+            var question = await _unitOfWork.Questions.GetByIdAsync(id);
+            if ( question == null)
+                throw new ArgumentException("Question not found");
+
+            return new QuestionDto
+            {
+                Id = question.Id,
+                Type = question.Type,
+                ExamId = question.ExamId,
+                Answers = question.Answers.Select(a => new AnswerDto
+                {
+                    Id = a.Id,
+                    QuestionId = a.QuestionId,
+                    Option = a.Option
+                }).ToList()
+            };
+        }
+
+        public async Task<IEnumerable<QuestionDto>> GetQuestionsByExamIdAsync(int examId)
+        {
+            var questions = await _unitOfWork.Questions.GetByExamIdAsync(examId);
+            if (questions == null)
+                throw new ArgumentException("No questions found for the given exam ID");
+
+            return questions.Select(q => new QuestionDto
+            {
+                Id = q.Id,
+                Type = q.Type,
+                ExamId = q.ExamId,
+                Answers = q.Answers.Select(a => new AnswerDto
+                {
+                    Id = a.Id,
+                    QuestionId = a.QuestionId,
+                    Option = a.Option
+                }).ToList()
+            });
+        }
+
+        public async Task<IEnumerable<QuestionDto>> GetQuestionsByTypeAsync(QuestionType type)
+        {
+            var questions = await _unitOfWork.Questions.GetByTypeAsync(type);
+            if (questions == null)
+                throw new ArgumentException("No questions found for the given type");
+
+            return questions.Select(q => new QuestionDto
+            {
+                Id = q.Id,
+                Type = q.Type,
+                ExamId = q.ExamId,
+                Answers = q.Answers.Select(a => new AnswerDto
+                {
+                    Id = a.Id,
+                    QuestionId = a.QuestionId,
+                    Option = a.Option
+                }).ToList()
+            });
+        }
+
+        public async Task<QuestionDto> UpdateQuestionAsync(int id, CreateQuestionDto dto)
+        {
+            var question = await _unitOfWork.Questions.GetByIdAsync(id);
+            if (question == null)
+                throw new ArgumentException("Question not found");
+
+            question.Type = dto.Type;
+            question.ExamId = dto.ExamId;
+            question.Answers = dto.Answers.Select(a => new Answer
+            {
+                Correct = a.Correct,
+                Option = a.Option
+            }).ToList();
+
+            _unitOfWork.Questions.Update(question);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new QuestionDto
+            {
+                Id = question.Id,
+                Type = question.Type,
+                ExamId = question.ExamId,
+                Answers = question.Answers.Select(a => new AnswerDto
+                {
+                    Id = a.Id,
+                    QuestionId = a.QuestionId,
+                    Option = a.Option
+                }).ToList()
+            };
+        }
+    }
+}

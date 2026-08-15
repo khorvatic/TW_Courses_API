@@ -40,7 +40,7 @@ namespace Application.Services
         public async Task DeleteAnswerAsync(int id)
         {
             var answer = await _unitOfWork.Answers.GetByIdAsync(id);
-            if (answer != null) throw new ArgumentException("Answer not found");
+            if (answer == null) throw new ArgumentException("Answer not found");
 
             await _unitOfWork.Answers.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -61,7 +61,7 @@ namespace Application.Services
         public async Task<AnswerDto> GetAnswerByIdAsync(int id)
         {
             var answer = await _unitOfWork.Answers.GetByIdAsync(id);
-            if ( answer != null ) throw new ArgumentException("Answer not found");
+            if ( answer == null ) throw new ArgumentException("Answer not found");
 
             return new AnswerDto
             {

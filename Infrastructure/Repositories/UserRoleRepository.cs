@@ -55,6 +55,16 @@ namespace Infrastructure.Repositories
             return await _context.UserRoles.FindAsync(id);
         }
 
+        public async Task<IEnumerable<UserRole>> GetByRoleIdAsync(int roleId)
+        {
+            return await _context.UserRoles.Where(ur => ur.RoleId == roleId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<UserRole>> GetByUserIdAsync(int userId)
+        {
+            return await _context.UserRoles.Where(ur => ur.UserId == userId).ToListAsync();
+        }
+
         public void Update(UserRole entity)
         {
             _context.UserRoles.Update(entity);

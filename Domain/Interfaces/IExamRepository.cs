@@ -7,6 +7,7 @@ namespace Domain.Interfaces
 {
     public interface IExamRepository : IGenericRepository<Exam>
     {
+        Task<IEnumerable<Exam>> GetByCourseIdAsync(int courseId);
         Task<Exam> GetByTitleAsync(string title);
     }
 }

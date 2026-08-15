@@ -118,7 +118,7 @@ namespace Application.Services
 
             double score = 0.0;
 
-            if (eqas.Count() > 0)
+            if (eqas.Any())
             {
                 score = (double)correctAnswers / eqas.Count() * 100;
             }

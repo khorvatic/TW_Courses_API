@@ -53,10 +53,12 @@ namespace Application.Services
                 CourseId = exam.CourseId,
                 Questions = exam.Questions.Select(q => new QuestionDto
                 {
+                    Id = q.Id,
                     Type = q.Type,
                     ExamId = q.ExamId,
                     Answers = q.Answers.Select(a => new AnswerDto
                     {
+                        Id = a.Id,
                         Option = a.Option,
                         QuestionId = a.QuestionId,
                     }).ToList()
@@ -75,10 +77,12 @@ namespace Application.Services
                 CourseId = x.CourseId,
                 Questions = x.Questions.Select(q => new QuestionDto
                 {
+                    Id = q.Id,
                     Type = q.Type,
                     ExamId = q.ExamId,
                     Answers = q.Answers.Select(a => new AnswerDto
                     {
+                        Id = a.Id,
                         Option = a.Option,
                         QuestionId = a.QuestionId,
                     }).ToList()
@@ -99,10 +103,12 @@ namespace Application.Services
                 CourseId = exam.CourseId,
                 Questions = exam.Questions.Select(q => new QuestionDto
                 {
+                    Id = q.Id,
                     Type = q.Type,
                     ExamId = q.ExamId,
                     Answers = q.Answers.Select(a => new AnswerDto
                     {
+                        Id = a.Id,
                         Option = a.Option,
                         QuestionId = a.QuestionId,
                     }).ToList()
@@ -124,10 +130,12 @@ namespace Application.Services
                 CourseId = x.CourseId,
                 Questions = x.Questions.Select(q => new QuestionDto
                 {
+                    Id = q.Id,
                     Type = q.Type,
                     ExamId = q.ExamId,
                     Answers = q.Answers.Select(a => new AnswerDto
                     {
+                        Id = a.Id,
                         Option = a.Option,
                         QuestionId = a.QuestionId,
                     }).ToList()
@@ -175,10 +183,12 @@ namespace Application.Services
                 CourseId = exam.CourseId,
                 Questions = exam.Questions.Select(q => new QuestionDto
                 {
+                    Id = q.Id,
                     Type = q.Type,
                     ExamId = q.ExamId,
                     Answers = q.Answers.Select(a => new AnswerDto
                     {
+                        Id = a.Id,
                         Option = a.Option,
                         QuestionId = a.QuestionId,
                     }).ToList()

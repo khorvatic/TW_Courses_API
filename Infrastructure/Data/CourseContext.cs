@@ -83,6 +83,13 @@ namespace Infrastructure.Data
                 .HasMany(e => e.Questions)
                 .WithOne(q => q.Exam)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // --- Role ---
+            modelBuilder.Entity<Role>()
+                .HasData(
+                    new Role { Id = 1, Name = "Admin" },
+                    new Role { Id = 2, Name = "User" }
+                );
         }
     }
 }

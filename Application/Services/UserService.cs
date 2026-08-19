@@ -36,7 +36,11 @@ namespace Application.Services
 
             user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
 
+            var role = await _unitOfWork.Roles.GetRoleByNameAsync("User");
+            if (role == null) throw new ArgumentException("Role doesn't exist");
+
             await _unitOfWork.Users.AddAsync(user);
+            await _unitOfWork.UserRoles.AddAsync(new UserRole { User = user, Role = role });
             await _unitOfWork.SaveChangesAsync();
 
             return new UserDto

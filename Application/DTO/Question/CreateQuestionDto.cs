@@ -8,6 +8,7 @@ namespace Application.DTO.Question
 {
     public class CreateQuestionDto
     {
+        public string Text { get; set; }
         public QuestionType Type { get; set; }
         public int ExamId { get; set; }
         public ICollection<CreateAnswerDto> Answers { get; set; }

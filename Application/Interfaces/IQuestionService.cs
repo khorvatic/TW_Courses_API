@@ -15,5 +15,6 @@ namespace Application.Interfaces
         Task<QuestionDto> CreateQuestionAsync(CreateQuestionDto dto);
         Task<QuestionDto> UpdateQuestionAsync(int id, CreateQuestionDto dto);
         Task DeleteQuestionAsync(int id);
+        Task<QuestionDto> GetQuesitonByText(string text);
     }
 }

@@ -53,6 +53,13 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(q => q.Id == id);
         }
 
+        public async Task<Question> GetByTextAsync(string text)
+        {
+            return await _context.Questions
+                .Include(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Text == text);
+        }
+
         public async Task<IEnumerable<Question>> GetByTypeAsync(QuestionType type)
         {
             return await _context.Questions

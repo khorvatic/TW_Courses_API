@@ -9,5 +9,6 @@ namespace Domain.Interfaces
     {
         Task<IEnumerable<Question>> GetByExamIdAsync(int examId);
         Task<IEnumerable<Question>> GetByTypeAsync(QuestionType type);
+        Task<Question> GetByTextAsync(string text);
     }
 }

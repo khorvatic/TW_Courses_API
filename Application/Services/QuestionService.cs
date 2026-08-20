@@ -22,6 +22,7 @@ namespace Application.Services
         {
             var question = new Question
             {
+                Text = dto.Text,
                 Type = dto.Type,
                 ExamId = dto.ExamId,
                 Answers = dto.Answers.Select(a => new Answer
@@ -37,6 +38,7 @@ namespace Application.Services
             return new QuestionDto
             {
                 Id = question.Id,
+                Text = question.Text,
                 Type = question.Type,
                 ExamId = question.ExamId,
                 Answers = question.Answers.Select(a => new AnswerDto
@@ -65,6 +67,7 @@ namespace Application.Services
             return questions.Select(q => new QuestionDto
             {
                 Id = q.Id,
+                Text = q.Text,
                 Type = q.Type,
                 ExamId = q.ExamId,
                 Answers = q.Answers.Select(a => new AnswerDto
@@ -76,6 +79,26 @@ namespace Application.Services
             });
         }
 
+        public async Task<QuestionDto> GetQuesitonByText(string text)
+        {
+            var question = await _unitOfWork.Questions.GetByTextAsync(text);
+            if (question == null) throw new ArgumentException("Question not found");
+
+            return new QuestionDto
+            {
+                Id = question.Id,
+                Text = question.Text,
+                Type = question.Type,
+                ExamId = question.ExamId,
+                Answers = question.Answers.Select(a => new AnswerDto
+                {
+                    Id = a.Id,
+                    QuestionId = a.QuestionId,
+                    Option = a.Option
+                }).ToList()
+            };
+        }
+
         public async Task<QuestionDto> GetQuestionByIdAsync(int id)
         {
             var question = await _unitOfWork.Questions.GetByIdAsync(id);
@@ -85,6 +108,7 @@ namespace Application.Services
             return new QuestionDto
             {
                 Id = question.Id,
+                Text = question.Text,
                 Type = question.Type,
                 ExamId = question.ExamId,
                 Answers = question.Answers.Select(a => new AnswerDto
@@ -105,6 +129,7 @@ namespace Application.Services
             return questions.Select(q => new QuestionDto
             {
                 Id = q.Id,
+                Text = q.Text,
                 Type = q.Type,
                 ExamId = q.ExamId,
                 Answers = q.Answers.Select(a => new AnswerDto
@@ -125,6 +150,7 @@ namespace Application.Services
             return questions.Select(q => new QuestionDto
             {
                 Id = q.Id,
+                Text= q.Text,
                 Type = q.Type,
                 ExamId = q.ExamId,
                 Answers = q.Answers.Select(a => new AnswerDto
@@ -142,6 +168,7 @@ namespace Application.Services
             if (question == null)
                 throw new ArgumentException("Question not found");
 
+            question.Text = dto.Text;
             question.Type = dto.Type;
             question.ExamId = dto.ExamId;
             question.Answers = dto.Answers.Select(a => new Answer
@@ -156,6 +183,7 @@ namespace Application.Services
             return new QuestionDto
             {
                 Id = question.Id,
+                Text = question.Text,
                 Type = question.Type,
                 ExamId = question.ExamId,
                 Answers = question.Answers.Select(a => new AnswerDto

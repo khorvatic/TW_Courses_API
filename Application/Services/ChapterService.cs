@@ -1,5 +1,6 @@
 ﻿using Application.DTO.Chapter;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -20,7 +21,7 @@ namespace Application.Services
         public async Task<ChapterDto> CreateChapterAsync(int courseId, CreateChapterDto createChapterDto)
         {
             var course = await _unitOfWork.Courses.GetByIdAsync(courseId);
-            if (course == null) throw new ArgumentException("Course not found");
+            if (course == null) throw new NotFoundException("Cannot create Chapter because Course with that ID not found");
 
             var chapter = new Chapter
             {
@@ -44,7 +45,7 @@ namespace Application.Services
         public async Task DeleteChapterAsync(int id)
         {
             var chapter = await _unitOfWork.Chapters.GetByIdAsync(id);
-            if (chapter == null) throw new ArgumentException("Chapter not found");
+            if (chapter == null) throw new NotFoundException("Cannot delete because Chapter with that ID not found");
 
             await _unitOfWork.Chapters.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -53,7 +54,7 @@ namespace Application.Services
         public async Task<IEnumerable<ChapterDto>> GetAllChaptersAsync(int courseId)
         {
             if (await _unitOfWork.Courses.GetByIdAsync(courseId) == null)
-                throw new ArgumentException("Course not found");
+                throw new NotFoundException("Cannot get chapter because Course with that ID not found");
 
             var chapters = await _unitOfWork.Chapters.GetByCourseIdAsync(courseId);
             if (chapters == null || !chapters.Any()) return Enumerable.Empty<ChapterDto>();
@@ -70,7 +71,7 @@ namespace Application.Services
         public async Task<ChapterDto> GetChapterByIdAsync(int id)
         {
             var chapter = await _unitOfWork.Chapters.GetByIdAsync(id);
-            if (chapter == null) throw new ArgumentException("Chapter not found");
+            if (chapter == null) throw new NotFoundException("Chapter with that ID not found");
 
             return new ChapterDto
             {
@@ -84,7 +85,7 @@ namespace Application.Services
         public async Task<ChapterDto> UpdateChapterAsync(int id, CreateChapterDto updateChapterDto)
         {
             var chapter = await _unitOfWork.Chapters.GetByIdAsync(id);
-            if (chapter == null) throw new ArgumentException("Chapter not found");
+            if (chapter == null) throw new NotFoundException("Cannot update because Chapter with that ID not found");
 
             chapter.Name = updateChapterDto.Name;
             chapter.Length = updateChapterDto.Length;

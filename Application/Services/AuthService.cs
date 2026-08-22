@@ -1,5 +1,6 @@
 ﻿using Application.DTO.Login;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
@@ -29,10 +30,10 @@ namespace Application.Services
         public async Task<string> LoginAsync(LoginDto dto)
         {
             var user = await _unitOfWork.Users.GetUserByEmailAsync(dto.Email);
-            if (user == null) throw new ArgumentException("Incorrect email or password.");
+            if (user == null) throw new UnauthorizedException("Incorrect email or password.");
 
             var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
-            if (verificationResult == PasswordVerificationResult.Failed) throw new ArgumentException("Incorrect email or password.");
+            if (verificationResult == PasswordVerificationResult.Failed) throw new UnauthorizedException("Incorrect email or password.");
 
             var token = GenerateToken(user, dto);
 

@@ -1,10 +1,12 @@
 ﻿using Application.DTO.Answer;
 using Application.DTO.Question;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Application.Services
@@ -54,7 +56,7 @@ namespace Application.Services
         {
             var question = await _unitOfWork.Questions.GetByIdAsync(id);
             if (question == null)
-                throw new ArgumentException("Question not found");
+                throw new NotFoundException("Cannot delete because Question with that ID not found");
 
             await _unitOfWork.Questions.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -63,6 +65,7 @@ namespace Application.Services
         public async Task<IEnumerable<QuestionDto>> GetAllQuestionsAsync()
         {
             var questions = await _unitOfWork.Questions.GetAllAsync();
+            if (questions == null) throw new NotFoundException("No Questions were found");
 
             return questions.Select(q => new QuestionDto
             {
@@ -82,7 +85,7 @@ namespace Application.Services
         public async Task<QuestionDto> GetQuesitonByText(string text)
         {
             var question = await _unitOfWork.Questions.GetByTextAsync(text);
-            if (question == null) throw new ArgumentException("Question not found");
+            if (question == null) throw new NotFoundException("Question with that text not found");
 
             return new QuestionDto
             {
@@ -103,7 +106,7 @@ namespace Application.Services
         {
             var question = await _unitOfWork.Questions.GetByIdAsync(id);
             if ( question == null)
-                throw new ArgumentException("Question not found");
+                throw new NotFoundException("Question with that ID not found");
 
             return new QuestionDto
             {
@@ -124,7 +127,7 @@ namespace Application.Services
         {
             var questions = await _unitOfWork.Questions.GetByExamIdAsync(examId);
             if (questions == null)
-                throw new ArgumentException("No questions found for the given exam ID");
+                throw new NotFoundException("No Questions found for the given examId");
 
             return questions.Select(q => new QuestionDto
             {
@@ -145,7 +148,7 @@ namespace Application.Services
         {
             var questions = await _unitOfWork.Questions.GetByTypeAsync(type);
             if (questions == null)
-                throw new ArgumentException("No questions found for the given type");
+                throw new NotFoundException("No questions found for the given questionType");
 
             return questions.Select(q => new QuestionDto
             {
@@ -166,7 +169,7 @@ namespace Application.Services
         {
             var question = await _unitOfWork.Questions.GetByIdAsync(id);
             if (question == null)
-                throw new ArgumentException("Question not found");
+                throw new NotFoundException("Cannot update because Question with that ID not found");
 
             question.Text = dto.Text;
             question.Type = dto.Type;

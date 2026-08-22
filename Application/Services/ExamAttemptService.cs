@@ -1,5 +1,6 @@
 ﻿using Application.DTO.ExamAttempt;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -43,7 +44,7 @@ namespace Application.Services
         public async Task DeleteExamAttemptAsync(int id)
         {
             var ea = await _unitOfWork.ExamAttempts.GetByIdAsync(id);
-            if (ea ==null) throw new ArgumentException("Exam attempt not found");
+            if (ea ==null) throw new NotFoundException("Cannot delete because Exam attempt with that ID not found");
 
             await _unitOfWork.ExamAttempts.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -52,6 +53,7 @@ namespace Application.Services
         public async Task<IEnumerable<ExamAttemptDto>> GetAllExamAttemptsAsync()
         {
             var examAttempts = await _unitOfWork.ExamAttempts.GetAllAsync();
+            if (examAttempts == null) throw new NotFoundException("No Exam attempts were found");
 
             return examAttempts.Select(ea => new ExamAttemptDto
             {
@@ -66,7 +68,7 @@ namespace Application.Services
         public async Task<ExamAttemptDto> GetExamAttemptByIdAsync(int id)
         {
             var ea = await _unitOfWork.ExamAttempts.GetByIdAsync(id);
-            if (ea == null) throw new ArgumentException("Exam attempt not found");
+            if (ea == null) throw new ArgumentException("Exam attempt with that ID not found");
 
             return new ExamAttemptDto
             {
@@ -81,7 +83,7 @@ namespace Application.Services
         public async Task<IEnumerable<ExamAttemptDto>> GetExamAttemptsByExamIdAsync(int examId)
         {
             var examAttempts = await _unitOfWork.ExamAttempts.GetByExamIdAsync(examId);
-            if (examAttempts == null || !examAttempts.Any()) throw new ArgumentException("No exam attempts found for the specified exam");
+            if (examAttempts == null || !examAttempts.Any()) throw new NotFoundException("No Exam attempts found for the specified Exam");
 
             return examAttempts.Select(ea => new ExamAttemptDto
             {
@@ -96,7 +98,7 @@ namespace Application.Services
         public async Task<IEnumerable<ExamAttemptDto>> GetExamAttemptsByUserIdAsync(int userId)
         {
             var examAttempts = await _unitOfWork.ExamAttempts.GetByUserIdAsync(userId);
-            if (examAttempts == null || !examAttempts.Any()) throw new ArgumentException("No exam attempts found for the specified user");
+            if (examAttempts == null || !examAttempts.Any()) throw new NotFoundException("No Exam attempts found for the specified User");
 
             return examAttempts.Select(ea => new ExamAttemptDto
             {
@@ -111,7 +113,7 @@ namespace Application.Services
         public async Task<ExamAttemptDto> SubmitExamAttemptAsync(int attemptId)
         {
             var attempt = await _unitOfWork.ExamAttempts.GetByIdAsync(attemptId);
-            if (attempt == null) throw new ArgumentException("Exam attempt not found");
+            if (attempt == null) throw new NotFoundException("Exam attempt with that ID not found");
 
             var eqas = await _unitOfWork.ExamQuestionAnswers.GetAllForAttemptIdAsync(attemptId);
             var correctAnswers = eqas.Count(e => e.Answer.Correct);

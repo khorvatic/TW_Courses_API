@@ -2,6 +2,7 @@
 using Application.DTO.Exam;
 using Application.DTO.Question;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -22,7 +23,7 @@ namespace Application.Services
         public async Task<ExamDto> CreateExamAsync(CreateExamDto dto)
         {
             var exam = await _unitOfWork.Exams.GetByTitleAsync(dto.Title);
-            if (exam != null) throw new ArgumentException("Exam with the same title already exists.");
+            if (exam != null) throw new BusinessRuleException("Exam with the same title already exists.");
 
             exam = new Exam
             {
@@ -69,6 +70,7 @@ namespace Application.Services
         public async Task<IEnumerable<ExamDto>> GetAllExamsAsync()
         {
             var exams = await _unitOfWork.Exams.GetAllAsync();
+            if (exams == null) throw new NotFoundException("No Exams were found");
 
             return exams.Select(x => new ExamDto {
                 Id = x.Id,
@@ -93,7 +95,7 @@ namespace Application.Services
         public async Task<ExamDto> GetExamByIdAsync(int id)
         {
             var exam = await _unitOfWork.Exams.GetByIdAsync(id);
-            if (exam == null) throw new ArgumentException("Exam with that ID not found.");
+            if (exam == null) throw new NotFoundException("Exam with that ID not found.");
 
             return new ExamDto
             {
@@ -120,7 +122,7 @@ namespace Application.Services
         {
             var exams = await _unitOfWork.Exams.GetByCourseIdAsync(courseId);
             if (exams == null || !exams.Any()) 
-                throw new ArgumentException("No exams found for that course.");
+                throw new NotFoundException("No Exams found for that Course.");
 
             return exams.Select(x => new ExamDto
             {
@@ -146,7 +148,7 @@ namespace Application.Services
         public async Task RemoveExamAsync(int id)
         {
             var exam = await _unitOfWork.Exams.GetByIdAsync(id);
-            if (exam == null) throw new ArgumentException("Exam with that ID not found.");
+            if (exam == null) throw new NotFoundException("Cannot delete because Exam with that ID was not found.");
 
             await _unitOfWork.Exams.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -155,7 +157,7 @@ namespace Application.Services
         public async Task<ExamDto> UpdateExamAsync(int id, CreateExamDto dto)
         {
             var exam = await _unitOfWork.Exams.GetByIdAsync(id);
-            if (exam == null) throw new ArgumentException("Exam with that ID not found.");
+            if (exam == null) throw new NotFoundException("Cannot update because Exam with that ID not found.");
 
             exam.Title = dto.Title;
             exam.AllotedTime = dto.AllotedTime;

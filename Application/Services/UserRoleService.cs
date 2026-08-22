@@ -1,5 +1,6 @@
 ﻿using Application.DTO.UserRole;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -21,7 +22,7 @@ namespace Application.Services
         {
             var userRole = await _unitOfWork.UserRoles.GetByCompositeIdAsync(createUserRoleDto.UserId, createUserRoleDto.RoleId);
             if (userRole != null)
-                throw new InvalidOperationException("User role already exists");
+                throw new BusinessRuleException("User role already exists");
             
             userRole = new UserRole
             {
@@ -43,7 +44,7 @@ namespace Application.Services
         {
             var userRole = await _unitOfWork.UserRoles.GetByCompositeIdAsync(userId, roleId);
             if (userRole == null)
-                throw new InvalidOperationException("User role not found");
+                throw new NotFoundException("Cannot delete becuaes UserRole with that ID not found");
 
             await _unitOfWork.UserRoles.DeleteCompositeAsync(userId, roleId);
             await _unitOfWork.SaveChangesAsync();
@@ -63,7 +64,7 @@ namespace Application.Services
         public async Task<UserRoleDto> GetByCompositeId(int userId, int roleId)
         {
             var userRole = await _unitOfWork.UserRoles.GetByCompositeIdAsync(userId, roleId);
-            if (userRole == null) throw new ArgumentException("User role not found");
+            if (userRole == null) throw new NotFoundException("UserRole with that ID not found");
 
             return new UserRoleDto
             {
@@ -75,7 +76,7 @@ namespace Application.Services
         public async Task<IEnumerable<UserRoleDto>> GetUserRolesByRoleIdAsync(int roleId)
         {
             var userRoles = await _unitOfWork.UserRoles.GetByRoleIdAsync(roleId);
-            if (userRoles == null) throw new ArgumentException("No user roles found for the given role ID");
+            if (userRoles == null) throw new NotFoundException("No UserRoles found for the given roleId");
 
             return userRoles.Select(ur => new UserRoleDto
             {
@@ -87,7 +88,7 @@ namespace Application.Services
         public async Task<IEnumerable<UserRoleDto>> GetUserRolesByUserIdAsync(int userId)
         {
             var userRoles = await _unitOfWork.UserRoles.GetByUserIdAsync(userId);
-            if (userRoles == null) throw new ArgumentException("No user roles found for the given user ID");
+            if (userRoles == null) throw new NotFoundException("No UserRoles found for the given userId");
 
             return userRoles.Select(ur => new UserRoleDto
             {

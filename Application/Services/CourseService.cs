@@ -1,5 +1,6 @@
 ﻿using Application.DTO.Course;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -28,7 +29,7 @@ namespace Application.Services
 
             if (await _unitOfWork.Courses.GetCourseByNameAsync(course.Name) != null)
             {
-                throw new ArgumentException("Course with the same name already exists");
+                throw new BusinessRuleException("Course with the same name already exists");
             }
 
             await _unitOfWork.Courses.AddAsync(course);
@@ -45,7 +46,7 @@ namespace Application.Services
         public async Task DeleteCourseAsync(int id)
         {
             var course = await _unitOfWork.Courses.GetByIdAsync(id);
-            if (course == null) throw new ArgumentException("Course not found");
+            if (course == null) throw new NotFoundException("Cannot delete because Course with that ID not found");
 
             await _unitOfWork.Courses.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -68,7 +69,7 @@ namespace Application.Services
             var course = await _unitOfWork.Courses.GetByIdAsync(id);
             if (course == null)
             {
-                throw new ArgumentException("Course not found");
+                throw new NotFoundException("Course with that ID not found");
             }
 
             return new CourseDto
@@ -82,7 +83,7 @@ namespace Application.Services
         public async Task<CourseDto> UpdateCourseAsync(int id, CreateCourseDto updateCourseDto)
         {
             var course = await _unitOfWork.Courses.GetByIdAsync(id);
-            if (course == null) throw new ArgumentException("Course not found");
+            if (course == null) throw new NotFoundException("Cannot update because Course with that ID not found");
 
             course.Name = updateCourseDto.Name;
             course.TimeToComplete = updateCourseDto.TimeToComplete;

@@ -1,5 +1,6 @@
 ﻿using Application.DTO.Review;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -22,11 +23,11 @@ namespace Application.Services
         {
             var enrolledInCourse = await _unitOfWork.EnrolledCourses.GetByUserIdAsync(userId);
             if (!enrolledInCourse.Any(ec => ec.CourseId == createReviewDto.CourseId))
-                throw new ArgumentException("User has not enrolled in this course and thus can't submit a review.");
+                throw new BusinessRuleException("User has not enrolled in this course and thus can't submit a review.");
 
             var existingReviews = await _unitOfWork.Reviews.GetReviewsByCourseIdAsync(createReviewDto.CourseId);
             if (existingReviews.Any(r => r.UserId == userId))
-                throw new InvalidOperationException("User has already submitted a review for this course.");
+                throw new BusinessRuleException("User has already submitted a review for this course.");
 
             var review = new Review
             {
@@ -55,7 +56,7 @@ namespace Application.Services
         {
             var review = await _unitOfWork.Reviews.GetByIdAsync(id);
             if (review == null)
-                throw new ArgumentException("Review not found.");
+                throw new NotFoundException("Cannot delete because Review with that ID not found.");
 
             await _unitOfWork.Reviews.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -78,7 +79,7 @@ namespace Application.Services
         public async Task<ReviewDto> GetReviewByIdAsync(int id)
         {
             var review = await _unitOfWork.Reviews.GetByIdAsync(id);
-            if (review == null) throw new ArgumentException("Review not found.");
+            if (review == null) throw new NotFoundException("Review with that ID not found.");
 
             return new ReviewDto
             {
@@ -94,7 +95,7 @@ namespace Application.Services
         public async Task<IEnumerable<ReviewDto>> GetReviewsByCourseIdAsync(int courseId)
         {
             var reviews = await _unitOfWork.Reviews.GetReviewsByCourseIdAsync(courseId);
-            if (reviews == null || !reviews.Any()) throw new ArgumentException("No reviews found for this course.");
+            if (reviews == null || !reviews.Any()) throw new NotFoundException("No reviews found for this Course.");
 
             return reviews.Select(r => new ReviewDto
             {
@@ -110,7 +111,7 @@ namespace Application.Services
         public async Task<IEnumerable<ReviewDto>> GetReviewsByUserIdAsync(int userId)
         {
             var reviews = await _unitOfWork.Reviews.GetReviewsByUserIdAsync(userId);
-            if (reviews == null || !reviews.Any()) throw new ArgumentException("No reviews found for this user.");
+            if (reviews == null || !reviews.Any()) throw new NotFoundException("No reviews found for this User.");
 
             return reviews.Select(r => new ReviewDto
             {
@@ -126,7 +127,7 @@ namespace Application.Services
         public async Task<ReviewDto> UpdateReviewAsync(int id, UpdateReviewDto updateReviewDto)
         {
             var review = await _unitOfWork.Reviews.GetByIdAsync(id);
-            if (review == null) throw new ArgumentException("Review not found.");
+            if (review == null) throw new NotFoundException("Cannot update because Review with that ID not found.");
 
             review.Text = updateReviewDto.Text;
             review.NumOfStars = updateReviewDto.NumOfStars;

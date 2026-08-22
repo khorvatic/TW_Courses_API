@@ -1,5 +1,6 @@
 ﻿using Application.DTO.Role;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -20,7 +21,7 @@ namespace Application.Services
         public async Task<RoleDto> CreateRoleAsync(CreateRoleDto dto)
         {
             var existingRole = await _unitOfWork.Roles.GetRoleByNameAsync(dto.Name);
-            if (existingRole != null) throw new ArgumentException("Role with the same name already exists.");
+            if (existingRole != null) throw new BusinessRuleException("Role with the same name already exists.");
 
             var role = new Role
             {
@@ -40,11 +41,10 @@ namespace Application.Services
         public async Task DeleteRoleByIdAsync(int id)
         {
             var role = await _unitOfWork.Roles.GetByIdAsync(id);
-            if (role != null)
-            {
-                await _unitOfWork.Roles.DeleteAsync(id);
-                await _unitOfWork.SaveChangesAsync();
-            }
+            if (role != null) throw new NotFoundException("Cannot delete because Role with that ID not found");
+
+            await _unitOfWork.Roles.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<RoleDto>> GetAllRolesAsync()
@@ -60,7 +60,7 @@ namespace Application.Services
             {
                 return new RoleDto { Id = role.Id, Name = role.Name };
             }
-            throw new ArgumentException("Role not found.");
+            throw new NotFoundException("Role with that ID not found.");
         }
 
         public async Task<RoleDto> GetRoleByNameAsync(string name)
@@ -70,7 +70,7 @@ namespace Application.Services
             {
                 return new RoleDto { Id = role.Id, Name = role.Name };
             }
-            throw new ArgumentException("Role not found.");
+            throw new NotFoundException("Role with that name not found.");
         }
     }
 }

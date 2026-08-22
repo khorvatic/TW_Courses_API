@@ -1,6 +1,7 @@
 ﻿using Application.DTO.Review;
 using Application.DTO.User;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,7 @@ namespace Application.Services
         public async Task<UserDto> CreateUserAsync(CreateUserDto dto)
         {
             var existingUser = await _unitOfWork.Users.GetUserByEmailAsync(dto.Email);
-            if (existingUser != null) throw new ArgumentException("User with this email already exists.");
+            if (existingUser != null) throw new BusinessRuleException("User with this email already exists.");
 
             var user = new User
             {
@@ -37,7 +38,7 @@ namespace Application.Services
             user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
 
             var role = await _unitOfWork.Roles.GetRoleByNameAsync("User");
-            if (role == null) throw new ArgumentException("Role doesn't exist");
+            if (role == null) throw new NotFoundException("Role 'User' doesn't exist");
 
             await _unitOfWork.Users.AddAsync(user);
             await _unitOfWork.UserRoles.AddAsync(new UserRole { User = user, Role = role });
@@ -55,7 +56,7 @@ namespace Application.Services
         public async Task DeleteUserAsync(int id)
         {
             var user = await _unitOfWork.Users.GetByIdAsync(id);
-            if (user == null) throw new ArgumentException("User not found.");
+            if (user == null) throw new NotFoundException("Cannot delete because User with that ID not found.");
 
             await _unitOfWork.Users.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -86,7 +87,7 @@ namespace Application.Services
         public async Task<UserDto> GetUserByEmailAsync(string email)
         {
             var user = await _unitOfWork.Users.GetUserByEmailAsync(email);
-            if (user == null) throw new ArgumentException("User with that email address not found.");
+            if (user == null) throw new NotFoundException("User with that email address not found.");
 
             return new UserDto
             {
@@ -109,7 +110,7 @@ namespace Application.Services
         public async Task<UserDto> GetUserByIdAsync(int id)
         {
             var user = await _unitOfWork.Users.GetByIdAsync(id);
-            if (user == null) throw new ArgumentException("User not found.");
+            if (user == null) throw new NotFoundException("User with that ID not found.");
 
             return new UserDto
             {
@@ -132,6 +133,8 @@ namespace Application.Services
         public async Task<IEnumerable<UserDto>> GetUsersByFullNameAsync(string name, string surname)
         {
             var users = await _unitOfWork.Users.GetUsersByFullNameAsync(name, surname);
+            if (users == null) throw new NotFoundException("No Users with that name and surname found");
+
             return users.Select(u => new UserDto
             {
                 Id = u.Id,
@@ -153,6 +156,7 @@ namespace Application.Services
         public async Task<IEnumerable<UserDto>> GetUsersByNameAsync(string name)
         {
             var users = await _unitOfWork.Users.GetUsersByNameAsync(name);
+            if (users == null) throw new NotFoundException("No Users with that name found");
 
             return users.Select(u => new UserDto
             {
@@ -175,6 +179,8 @@ namespace Application.Services
         public async Task<IEnumerable<UserDto>> GetUsersBySurnameAsync(string surname)
         {
             var users = await _unitOfWork.Users.GetUsersBySurnameAsync(surname);
+            if (users == null) throw new NotFoundException("No Users with that surname found");
+
             return users.Select(u => new UserDto
             {
                 Id = u.Id,
@@ -196,7 +202,7 @@ namespace Application.Services
         public async Task<UserDto> UpdateUserAsync(int id, CreateUserDto dto)
         {
             var user = await _unitOfWork.Users.GetByIdAsync(id);
-            if (user == null) throw new ArgumentException("User not found.");
+            if (user == null) throw new NotFoundException("Cannot update because User with that ID not found.");
 
             user.Name = dto.Name;
             user.Surname = dto.Surname;

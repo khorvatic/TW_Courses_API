@@ -1,5 +1,6 @@
 ﻿using Application.DTO.ExamQuestionAnswer;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -20,7 +21,7 @@ namespace Application.Services
         public async Task<ExamQuestionAnswerDto> CreateExamQuestionAnswerAsync(CreateExamQuestionAnswerDto dto)
         {
             var eqa = await _unitOfWork.ExamQuestionAnswers.GetByCompositeIdAsync(dto.AnswerId, dto.QuestionId, dto.AttemptId);
-            if (eqa != null) throw new ArgumentException("Exam question answer already exists");
+            if (eqa != null) throw new BusinessRuleException("ExamQuestionAnswer already exists");
 
             eqa = new ExamQuestionAnswer
             {
@@ -43,7 +44,7 @@ namespace Application.Services
         public async Task DeleteExamQuestionAnswerAsync(int answerId, int questionId, int attemptId)
         {
             var eqa = await _unitOfWork.ExamQuestionAnswers.GetByCompositeIdAsync(answerId, questionId, attemptId);
-            if (eqa == null) throw new ArgumentException("Exam question answer not found");
+            if (eqa == null) throw new NotFoundException("Cannot delete because ExamQuestionAnswer not found");
 
             await _unitOfWork.ExamQuestionAnswers.DeleteCompositeAsync(answerId, questionId, attemptId);
             await _unitOfWork.SaveChangesAsync();
@@ -64,7 +65,7 @@ namespace Application.Services
         public async Task<IEnumerable<ExamQuestionAnswerDto>> GetExamQuestionAnswerByAnswerIdAsync(int answerId)
         {
             var eqas = await _unitOfWork.ExamQuestionAnswers.GetAllForAnswerIdAsync(answerId);
-            if (eqas == null) throw new ArgumentException("No exam question answers found for the given answerId");
+            if (eqas == null) throw new NotFoundException("No ExamQuestionAnswers found for the given answerId");
 
             return eqas.Select(eqa => new ExamQuestionAnswerDto
             {
@@ -77,7 +78,7 @@ namespace Application.Services
         public async Task<IEnumerable<ExamQuestionAnswerDto>> GetExamQuestionAnswerByAttemptIdAsync(int attemptId)
         {
             var eqas = await _unitOfWork.ExamQuestionAnswers.GetAllForAttemptIdAsync(attemptId);
-            if (eqas == null) throw new ArgumentException("No exam question answers found for the given attemptId");
+            if (eqas == null) throw new NotFoundException("No ExamQuestionAnswers found for the given attemptId");
 
             return eqas.Select(eqa => new ExamQuestionAnswerDto
             {
@@ -90,7 +91,7 @@ namespace Application.Services
         public async Task<IEnumerable<ExamQuestionAnswerDto>> GetExamQuestionAnswerByQuestionIdAsync(int questionId)
         {
             var eqas = await _unitOfWork.ExamQuestionAnswers.GetAllForQuestionIdAsync(questionId);
-            if (eqas == null) throw new ArgumentException("No exam question answers found for the given questionId");
+            if (eqas == null) throw new NotFoundException("No ExamQuestionAnswers found for the given questionId");
 
             return eqas.Select(eqa => new ExamQuestionAnswerDto
             {

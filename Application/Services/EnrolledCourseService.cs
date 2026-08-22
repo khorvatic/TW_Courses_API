@@ -1,5 +1,6 @@
 ﻿using Application.DTO.EnrolledCourse;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -22,7 +23,7 @@ namespace Application.Services
             var enrolledCourses = await _unitOfWork.EnrolledCourses.GetByUserIdAndCourseIdAsync(dto.UserId, dto.CourseId);
             if (enrolledCourses.Any(ec => !ec.Completed))
             {
-                throw new InvalidOperationException("User is already enrolled in this course and has not completed it yet.");
+                throw new BusinessRuleException("User is already enrolled in this course and has not completed it yet.");
             }
 
             var enrolledCourse = new EnrolledCourse
@@ -47,7 +48,7 @@ namespace Application.Services
         public async Task<EnrolledCourseDto> GetEnrolledCourseByIdAsync(int enrolledCourseId)
         {
             var enrolledCourse = await _unitOfWork.EnrolledCourses.GetByIdAsync(enrolledCourseId);
-            if (enrolledCourse == null) throw new ArgumentException("Enrolled course not found");
+            if (enrolledCourse == null) throw new NotFoundException("Enrolled course with that ID not found");
 
             return new EnrolledCourseDto
             {
@@ -76,7 +77,7 @@ namespace Application.Services
             var enrolledCourse = enrolledCourses.FirstOrDefault(ec => !ec.Completed);
 
             if (enrolledCourse == null) 
-                throw new ArgumentException("Enrolled course not found");
+                throw new NotFoundException("User doesn't have any uncompleted Enrolled courses");
 
             enrolledCourse.Completed = true;
             _unitOfWork.EnrolledCourses.Update(enrolledCourse);

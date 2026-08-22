@@ -1,5 +1,6 @@
 ﻿using Application.DTO.Answer;
 using Application.Interfaces;
+using Domain.Exceptions;
 using Domain.Interfaces;
 using Domain.Models;
 using System;
@@ -40,7 +41,7 @@ namespace Application.Services
         public async Task DeleteAnswerAsync(int id)
         {
             var answer = await _unitOfWork.Answers.GetByIdAsync(id);
-            if (answer == null) throw new ArgumentException("Answer not found");
+            if (answer == null) throw new NotFoundException("Can't delete because Answer with that ID not found");
 
             await _unitOfWork.Answers.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -61,7 +62,7 @@ namespace Application.Services
         public async Task<AnswerDto> GetAnswerByIdAsync(int id)
         {
             var answer = await _unitOfWork.Answers.GetByIdAsync(id);
-            if ( answer == null ) throw new ArgumentException("Answer not found");
+            if ( answer == null ) throw new NotFoundException("Answer with that ID not found");
 
             return new AnswerDto
             {
@@ -74,7 +75,7 @@ namespace Application.Services
         public async Task<AnswerDto> UpdateAnswerAsync(int id, CreateAnswerDto updateAnswerDto)
         {
             var answer = await _unitOfWork.Answers.GetByIdAsync(id);
-            if (answer == null) throw new ArgumentException("Answer not found");
+            if (answer == null) throw new NotFoundException("Unable to update Answer with that ID because it was not found");
 
             answer.QuestionId = updateAnswerDto.QuestionId;
             answer.Option = updateAnswerDto.Option;

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Presentation.Middlewares;
 using Serilog;
 using Serilog.Events;
@@ -30,7 +31,38 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    // Without this Swagger can't parse Id union type
+    options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0;
+
+    // Makes the Authorize button visible for Microsoft.OpenApi v2.x
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        var bearerScheme = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT"
+        };
+
+        document.Components ??= new OpenApiComponents();
+        document.AddComponent("Bearer", bearerScheme);
+
+        var securityRequirement = new OpenApiSecurityRequirement
+        {
+            [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+        };
+
+        foreach (var operation in document.Paths.Values.SelectMany(p => p.Operations))
+        {
+            operation.Value.Security ??= new List<OpenApiSecurityRequirement>();
+            operation.Value.Security.Add(securityRequirement);
+        }
+
+        return Task.CompletedTask;
+    });
+});
 
 builder.Services.AddDbContext<CourseContext>(options =>
     options.UseSqlServer(connectionString));

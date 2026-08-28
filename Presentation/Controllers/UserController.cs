@@ -2,6 +2,8 @@
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Extensions;
+using System.Security.Claims;
 
 namespace Presentation.Controllers
 {
@@ -19,62 +21,41 @@ namespace Presentation.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDto>> Register(CreateUserDto dto)
         {
-            try
-            {
-                var user = await _userService.CreateUserAsync(dto);
+            var user = await _userService.CreateUserAsync(dto);
 
-                return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUserById([FromRoute] int id)
         {
-            try
+            var userId = User.GetUserId();
+            if (userId != id && !User.IsInRole("Admin"))
             {
-                var user = await _userService.GetUserByIdAsync(id);
+                return Forbid();
+            }
 
-                return Ok(user);
-            }
-            catch (ArgumentException)
-            {
-                return NotFound();
-            }
+            var user = await _userService.GetUserByIdAsync(id);
+            return Ok(user);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<UserDto>> GetUserByEmail([FromBody] string email)
+        [Authorize]
+        [HttpGet("by-email")]
+        public async Task<ActionResult<UserDto>> GetUserByEmail([FromQuery] string email)
         {
-            try
-            {
-                var user = await _userService.GetUserByEmailAsync(email);
+            var user = await _userService.GetUserByEmailAsync(email);
 
-                return Ok(user);
-            }
-            catch (ArgumentException)
-            {
-                return NotFound(email);
-            }
+            return Ok(user);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersByName([FromQuery] string name)
         {
-            try
-            {
-                var users = await _userService.GetUsersByNameAsync(name);
+            var users = await _userService.GetUsersByNameAsync(name);
 
-                return Ok(users);
-            }
-            catch (ArgumentException)
-            {
-                return NotFound(name);
-            }
+            return Ok(users);
         }
     }
 }

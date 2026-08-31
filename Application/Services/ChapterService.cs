@@ -82,6 +82,20 @@ namespace Application.Services
             };
         }
 
+        public async Task<ChapterDto> GetChapterByNameAsync(string name)
+        {
+            var chapter = await _unitOfWork.Chapters.GetByNameAsync(name);
+            if (chapter == null) throw new NotFoundException("Chapter with that name not found");
+
+            return new ChapterDto
+            {
+                Id = chapter.Id,
+                Name = chapter.Name,
+                Length = chapter.Length,
+                CourseId = chapter.CourseId
+            };
+        }
+
         public async Task<ChapterDto> UpdateChapterAsync(int id, CreateChapterDto updateChapterDto)
         {
             var chapter = await _unitOfWork.Chapters.GetByIdAsync(id);

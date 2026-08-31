@@ -80,6 +80,19 @@ namespace Application.Services
             };
         }
 
+        public async Task<CourseDto> GetCourseByNameAsync(string name)
+        {
+            var course = await _unitOfWork.Courses.GetCourseByNameAsync(name);
+            if (course == null) throw new NotFoundException("Course with that name not found");
+
+            return new CourseDto
+            {
+                Id = course.Id,
+                Name = course.Name,
+                TimeToComplete = course.TimeToComplete
+            };
+        }
+
         public async Task<CourseDto> UpdateCourseAsync(int id, CreateCourseDto updateCourseDto)
         {
             var course = await _unitOfWork.Courses.GetByIdAsync(id);

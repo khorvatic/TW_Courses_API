@@ -46,6 +46,11 @@ namespace Infrastructure.Repositories
             return await _context.Chapters.FindAsync(id);
         }
 
+        public async Task<Chapter> GetByNameAsync(string name)
+        {
+            return await _context.Chapters.FirstOrDefaultAsync(c => c.Name == name);
+        }
+
         public void Update(Chapter entity)
         {
             _context.Chapters.Update(entity);

@@ -9,6 +9,7 @@ namespace Application.Interfaces
     {
         Task<IEnumerable<ChapterDto>> GetAllChaptersAsync(int courseId);
         Task<ChapterDto> GetChapterByIdAsync(int id);
+        Task<ChapterDto> GetChapterByNameAsync(string name);
         Task<ChapterDto> CreateChapterAsync(int courseId, CreateChapterDto createChapterDto);
         Task<ChapterDto> UpdateChapterAsync(int id, CreateChapterDto updateChapterDto);
         Task DeleteChapterAsync(int id);

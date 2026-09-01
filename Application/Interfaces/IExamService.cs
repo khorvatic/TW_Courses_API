@@ -13,5 +13,6 @@ namespace Application.Interfaces
         Task<ExamDto> CreateExamAsync(CreateExamDto dto);
         Task<ExamDto> UpdateExamAsync(int id, CreateExamDto dto);
         Task RemoveExamAsync(int id);
+        Task<ExamDto> GetExamByTitleAsync(string title);
     }
 }

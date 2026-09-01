@@ -1,4 +1,5 @@
-﻿using Application.DTO.Course;
+﻿using Application.DTO.Chapter;
+using Application.DTO.Course;
 using Application.Interfaces;
 using Domain.Exceptions;
 using Domain.Interfaces;
@@ -60,7 +61,14 @@ namespace Application.Services
             {
                 Id = course.Id,
                 Name = course.Name,
-                TimeToComplete = course.TimeToComplete
+                TimeToComplete = course.TimeToComplete,
+                Chapters = course.Chapters.Select(chapter => new ChapterDto
+                {
+                    Id = chapter.Id,
+                    Name = chapter.Name,
+                    Length = chapter.Length,
+                    CourseId = course.Id
+                }).ToList()
             });
         }
 
@@ -76,7 +84,14 @@ namespace Application.Services
             {
                 Id = course.Id,
                 Name = course.Name,
-                TimeToComplete = course.TimeToComplete
+                TimeToComplete = course.TimeToComplete,
+                Chapters = course.Chapters.Select(chapter => new ChapterDto
+                {
+                    Id = chapter.Id,
+                    Name = chapter.Name,
+                    Length = chapter.Length,
+                    CourseId = course.Id
+                }).ToList()
             };
         }
 
@@ -89,7 +104,14 @@ namespace Application.Services
             {
                 Id = course.Id,
                 Name = course.Name,
-                TimeToComplete = course.TimeToComplete
+                TimeToComplete = course.TimeToComplete,
+                Chapters = course.Chapters.Select(chapter => new ChapterDto
+                {
+                    Id = chapter.Id,
+                    Name = chapter.Name,
+                    Length = chapter.Length,
+                    CourseId = course.Id
+                }).ToList()
             };
         }
 
@@ -108,7 +130,14 @@ namespace Application.Services
             {
                 Id = course.Id,
                 Name = course.Name,
-                TimeToComplete = course.TimeToComplete
+                TimeToComplete = course.TimeToComplete,
+                Chapters = course.Chapters.Select(chapter => new ChapterDto
+                {
+                    Id = chapter.Id,
+                    Name = chapter.Name,
+                    Length = chapter.Length,
+                    CourseId = course.Id
+                }).ToList()
             };
         }
     }

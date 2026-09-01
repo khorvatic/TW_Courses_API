@@ -29,18 +29,7 @@ namespace Application.Services
             {
                 Title = dto.Title,
                 AllotedTime = dto.AllotedTime,
-                CourseId = dto.CourseId,
-                Questions = dto.Questions.Select(q => new Question
-                {
-                    Type = q.Type,
-                    ExamId = q.ExamId,
-                    Answers = q.Answers.Select(a => new Answer
-                    {
-                        Option = a.Option,
-                        Correct = a.Correct,
-                        QuestionId = a.QuestionId,
-                    }).ToList()
-                }).ToList()
+                CourseId = dto.CourseId
             };
 
             await _unitOfWork.Exams.AddAsync(exam);
@@ -51,19 +40,7 @@ namespace Application.Services
                 Id = exam.Id,
                 Title = exam.Title,
                 AllotedTime = exam.AllotedTime,
-                CourseId = exam.CourseId,
-                Questions = exam.Questions.Select(q => new QuestionDto
-                {
-                    Id = q.Id,
-                    Type = q.Type,
-                    ExamId = q.ExamId,
-                    Answers = q.Answers.Select(a => new AnswerDto
-                    {
-                        Id = a.Id,
-                        Option = a.Option,
-                        QuestionId = a.QuestionId,
-                    }).ToList()
-                }).ToList()
+                CourseId = exam.CourseId
             };
         }
 
@@ -96,6 +73,32 @@ namespace Application.Services
         {
             var exam = await _unitOfWork.Exams.GetByIdAsync(id);
             if (exam == null) throw new NotFoundException("Exam with that ID not found.");
+
+            return new ExamDto
+            {
+                Id = exam.Id,
+                Title = exam.Title,
+                AllotedTime = exam.AllotedTime,
+                CourseId = exam.CourseId,
+                Questions = exam.Questions.Select(q => new QuestionDto
+                {
+                    Id = q.Id,
+                    Type = q.Type,
+                    ExamId = q.ExamId,
+                    Answers = q.Answers.Select(a => new AnswerDto
+                    {
+                        Id = a.Id,
+                        Option = a.Option,
+                        QuestionId = a.QuestionId,
+                    }).ToList()
+                }).ToList()
+            };
+        }
+
+        public async Task<ExamDto> GetExamByTitleAsync(string title)
+        {
+            var exam = await _unitOfWork.Exams.GetByTitleAsync(title);
+            if (exam == null) throw new NotFoundException("Exam with that title not found.");
 
             return new ExamDto
             {
@@ -162,17 +165,6 @@ namespace Application.Services
             exam.Title = dto.Title;
             exam.AllotedTime = dto.AllotedTime;
             exam.CourseId = dto.CourseId;
-            exam.Questions = dto.Questions.Select(q => new Question
-            {
-                Type = q.Type,
-                ExamId = q.ExamId,
-                Answers = q.Answers.Select(a => new Answer
-                {
-                    Option = a.Option,
-                    Correct = a.Correct,
-                    QuestionId = a.QuestionId,
-                }).ToList()
-            }).ToList();
 
             _unitOfWork.Exams.Update(exam);
             await _unitOfWork.SaveChangesAsync();

@@ -24,7 +24,7 @@ namespace Infrastructure.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
             if (course != null)
             {
                 _context.Courses.Remove(course);
@@ -33,17 +33,23 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Course>> GetAllAsync()
         {
-            return await _context.Courses.ToListAsync();
+            return await _context.Courses
+                .Include(c => c.Chapters)
+                .ToListAsync();
         }
 
         public async Task<Course> GetByIdAsync(int id)
         {
-            return await _context.Courses.FindAsync(id);
+            return await _context.Courses
+                .Include(c => c.Chapters)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Course?> GetCourseByNameAsync(string name)
         {
-            return await _context.Courses.FirstOrDefaultAsync(c => c.Name == name);
+            return await _context.Courses
+                .Include(c => c.Chapters)
+                .FirstOrDefaultAsync(c => c.Name == name);
         }
 
         public void Update(Course entity)

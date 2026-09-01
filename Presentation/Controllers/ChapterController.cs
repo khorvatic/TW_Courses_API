@@ -50,7 +50,7 @@ namespace Presentation.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<ActionResult<ChapterDto>> UpdateChapter([FromRoute] int id, CreateChapterDto dto)
+        public async Task<ActionResult<ChapterDto>> UpdateChapter([FromRoute] int id, [FromBody] CreateChapterDto dto)
         {
             return Ok(await _chapterService.UpdateChapterAsync(id, dto));
         }

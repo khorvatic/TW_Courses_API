@@ -24,7 +24,8 @@ namespace Application.Services
             var answer = new Answer
             {
                 QuestionId = createAnswerDto.QuestionId,
-                Option = createAnswerDto.Option
+                Option = createAnswerDto.Option,
+                Correct = createAnswerDto.Correct
             };
 
             await _unitOfWork.Answers.AddAsync(answer);

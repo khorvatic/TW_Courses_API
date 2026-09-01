@@ -7,11 +7,11 @@ namespace Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CourseContoller : ControllerBase
+    public class CourseController : ControllerBase
     {
         private readonly ICourseService _courseService;
 
-        public CourseContoller(ICourseService courseService)
+        public CourseController(ICourseService courseService)
         {
             _courseService = courseService;
         }

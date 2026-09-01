@@ -26,12 +26,7 @@ namespace Application.Services
             {
                 Text = dto.Text,
                 Type = dto.Type,
-                ExamId = dto.ExamId,
-                Answers = dto.Answers.Select(a => new Answer
-                {
-                    Correct = a.Correct,
-                    Option = a.Option
-                }).ToList()
+                ExamId = dto.ExamId
             };
 
             await _unitOfWork.Questions.AddAsync(question);
@@ -82,7 +77,7 @@ namespace Application.Services
             });
         }
 
-        public async Task<QuestionDto> GetQuesitonByText(string text)
+        public async Task<QuestionDto> GetQuestionByTextAsync(string text)
         {
             var question = await _unitOfWork.Questions.GetByTextAsync(text);
             if (question == null) throw new NotFoundException("Question with that text not found");
@@ -174,11 +169,6 @@ namespace Application.Services
             question.Text = dto.Text;
             question.Type = dto.Type;
             question.ExamId = dto.ExamId;
-            question.Answers = dto.Answers.Select(a => new Answer
-            {
-                Correct = a.Correct,
-                Option = a.Option
-            }).ToList();
 
             _unitOfWork.Questions.Update(question);
             await _unitOfWork.SaveChangesAsync();

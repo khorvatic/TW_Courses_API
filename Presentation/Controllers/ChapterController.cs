@@ -21,7 +21,7 @@ namespace Presentation.Controllers
         public async Task<ActionResult<ChapterDto>> CreateChapter([FromRoute] int courseId, CreateChapterDto dto) 
         {
             var chapter = await _chapterService.CreateChapterAsync(courseId, dto);
-            return CreatedAtAction(nameof(CreateChapter), new { id = chapter.Id }, chapter);
+            return CreatedAtAction(nameof(GetChapterById), new { id = chapter.Id }, chapter);
         }
 
         [Authorize]
@@ -32,7 +32,7 @@ namespace Presentation.Controllers
             return Ok(chapters);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ChapterDto>> GetChapterById([FromRoute] int id)
         {

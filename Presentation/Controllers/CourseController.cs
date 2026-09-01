@@ -22,10 +22,10 @@ namespace Presentation.Controllers
         {
             var course = await _courseService.CreateCourseAsync(dto);
 
-            return CreatedAtAction(nameof(CreateCourse), new { id = course.Id }, course);
+            return CreatedAtAction(nameof(GetCourseById), new { id = course.Id }, course);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<CourseDto>> GetCourseById([FromRoute] int id)
         {

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class QuestionController : ControllerBase
     {
         private readonly IQuestionService _questionService;
@@ -23,7 +25,7 @@ namespace Presentation.Controllers
             return CreatedAtAction(nameof(GetQuestionById), new { id = question.Id }, question);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<QuestionDto>> GetQuestionById([FromRoute] int id)
         {
@@ -47,7 +49,7 @@ namespace Presentation.Controllers
             return Ok(question);
         }
 
-        [Authorize(Roles = "Admin,Instructor")]
+        [Authorize]
         [HttpGet("exam/{examId}")]
         public async Task<ActionResult<IEnumerable<QuestionDto>>> GetQuestionsByExamId([FromRoute] int examId)
         {

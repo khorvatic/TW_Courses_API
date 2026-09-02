@@ -25,7 +25,6 @@ namespace Presentation.Controllers
             return CreatedAtAction(nameof(GetCourseById), new { id = course.Id }, course);
         }
 
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<CourseDto>> GetCourseById([FromRoute] int id)
         {

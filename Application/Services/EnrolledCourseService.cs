@@ -62,6 +62,8 @@ namespace Application.Services
         public async Task<IEnumerable<EnrolledCourseDto>> GetEnrolledCoursesForUserAsync(int userId)
         {
             var enrolledCourses = await _unitOfWork.EnrolledCourses.GetByUserIdAsync(userId);
+            if (enrolledCourses == null) throw new NotFoundException("User doesn't have any enrolled courses");
+
             return enrolledCourses.Select(ec => new EnrolledCourseDto
             {
                 Id = ec.Id,

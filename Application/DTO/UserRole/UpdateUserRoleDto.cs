@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Application.DTO.UserRole
 {
-    public class CreateUserRoleDto
+    public class UpdateUserRoleDto
     {
         public int UserId { get; set; }
         public int RoleId { get; set; }

@@ -18,11 +18,11 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<UserRoleDto> CreateUserRoleAsync(CreateUserRoleDto createUserRoleDto)
+        public async Task<UserRoleDto> CreateUserRoleAsync(UpdateUserRoleDto createUserRoleDto)
         {
             var userRole = await _unitOfWork.UserRoles.GetByCompositeIdAsync(createUserRoleDto.UserId, createUserRoleDto.RoleId);
             if (userRole != null)
-                throw new BusinessRuleException("User role already exists");
+                throw new BusinessRuleException("User is already assigned that role");
             
             userRole = new UserRole
             {
@@ -44,7 +44,7 @@ namespace Application.Services
         {
             var userRole = await _unitOfWork.UserRoles.GetByCompositeIdAsync(userId, roleId);
             if (userRole == null)
-                throw new NotFoundException("Cannot delete becuaes UserRole with that ID not found");
+                throw new NotFoundException("Cannot delete because UserRole with that ID not found");
 
             await _unitOfWork.UserRoles.DeleteCompositeAsync(userId, roleId);
             await _unitOfWork.SaveChangesAsync();
@@ -61,7 +61,7 @@ namespace Application.Services
             });
         }
 
-        public async Task<UserRoleDto> GetByCompositeId(int userId, int roleId)
+        public async Task<UserRoleDto> GetByCompositeIdAsync(int userId, int roleId)
         {
             var userRole = await _unitOfWork.UserRoles.GetByCompositeIdAsync(userId, roleId);
             if (userRole == null) throw new NotFoundException("UserRole with that ID not found");

@@ -13,5 +13,6 @@ namespace Application.Interfaces
         Task<IEnumerable<ExamQuestionAnswerDto>> GetExamQuestionAnswerByAttemptIdAsync(int attemptId);
         Task<IEnumerable<ExamQuestionAnswerDto>> GetAllExamQuestionAnswersAsync();
         Task DeleteExamQuestionAnswerAsync(int answerId, int questionId, int attemptId);
+        Task<ExamQuestionAnswerDto> GetExamQuestionAnswerByIdAsync(int questionId, int answerId, int attemptId);
     }
 }

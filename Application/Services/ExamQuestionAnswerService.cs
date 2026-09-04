@@ -88,6 +88,19 @@ namespace Application.Services
             });
         }
 
+        public async Task<ExamQuestionAnswerDto> GetExamQuestionAnswerByIdAsync(int questionId, int answerId, int attemptId)
+        {
+            var eqa = await _unitOfWork.ExamQuestionAnswers.GetByCompositeIdAsync(answerId, questionId, attemptId);
+            if (eqa == null) throw new NotFoundException("ExamQuestionAnswer not found");
+
+            return new ExamQuestionAnswerDto
+            {
+                AnswerId = eqa.AnswerId,
+                QuestionId = eqa.QuestionId,
+                AttemptId = eqa.AttemptId
+            };
+        }
+
         public async Task<IEnumerable<ExamQuestionAnswerDto>> GetExamQuestionAnswerByQuestionIdAsync(int questionId)
         {
             var eqas = await _unitOfWork.ExamQuestionAnswers.GetAllForQuestionIdAsync(questionId);

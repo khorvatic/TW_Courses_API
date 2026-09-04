@@ -10,8 +10,8 @@ namespace Application.Interfaces
         Task<IEnumerable<UserRoleDto>> GetAllUserRolesAsync();
         Task<IEnumerable<UserRoleDto>> GetUserRolesByUserIdAsync(int userId);
         Task<IEnumerable<UserRoleDto>> GetUserRolesByRoleIdAsync(int roleId);
-        Task<UserRoleDto> GetByCompositeId(int userId, int roleId);
-        Task<UserRoleDto> CreateUserRoleAsync(CreateUserRoleDto createUserRoleDto);
+        Task<UserRoleDto> GetByCompositeIdAsync(int userId, int roleId);
+        Task<UserRoleDto> CreateUserRoleAsync(UpdateUserRoleDto createUserRoleDto);
         Task DeleteUserRoleAsync(int userId, int roleId);
     }
 }

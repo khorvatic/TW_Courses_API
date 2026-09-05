@@ -43,7 +43,7 @@ namespace Presentation.Controllers
             return Ok(reviews);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpGet("course/{courseId}")]
         public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviewsByCourseId([FromRoute] int courseId)
         {

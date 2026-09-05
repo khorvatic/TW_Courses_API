@@ -14,6 +14,7 @@ using Microsoft.OpenApi;
 using Presentation.Middlewares;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.MSSqlServer;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -111,7 +112,16 @@ try
         .ReadFrom.Configuration(builder.Configuration)
         .ReadFrom.Services(services)
         .Enrich.FromLogContext()
-        .WriteTo.Console());
+        .WriteTo.Console()
+        .WriteTo.MSSqlServer(
+            connectionString: connectionString,
+            sinkOptions: new MSSqlServerSinkOptions
+            {
+                TableName = "Logs",
+                AutoCreateSqlTable = true
+            },
+            restrictedToMinimumLevel: LogEventLevel.Warning
+        ));
 
 
     var app = builder.Build();

@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.JSInterop.Infrastructure;
 using Presentation.Extensions;
 
 namespace Presentation.Controllers
@@ -37,11 +36,11 @@ namespace Presentation.Controllers
         {
             var userId = User.GetUserId();
             var enrolledCourse = await _enrolledCourseService.GetEnrolledCourseByIdAsync(enrolledCourseId);
-            if (userId == enrolledCourse.UserId && User.IsInRole("Admin"))
+            if (userId != enrolledCourse.UserId && !User.IsInRole("Admin"))
             {
-                return Ok(enrolledCourse); 
+                return Forbid("You are not authorized to access this enrolled course.");
             }
-            return Forbid("You are not authorized to access this enrolled course.");
+            return Ok(enrolledCourse); 
         }
 
         [Authorize]

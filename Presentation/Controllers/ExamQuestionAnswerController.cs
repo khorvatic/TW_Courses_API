@@ -36,7 +36,7 @@ namespace Presentation.Controllers
                 eqa);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Instructor")]
         [HttpGet("{questionId}/{answerId}/{attemptId}")]
         public async Task<ActionResult<ExamQuestionAnswerDto>> GetExamQuestionAnswerById(
             [FromRoute] int questionId, [FromRoute] int answerId, [FromRoute] int attemptId)

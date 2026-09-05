@@ -18,16 +18,8 @@ namespace Presentation.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> Login(LoginDto dto)
         {
-            try
-            {
-                var token = await _authService.LoginAsync(dto);
-
-                return Ok(token);
-            }
-            catch (ArgumentException)
-            {
-                return Unauthorized();
-            }
+            var token = await _authService.LoginAsync(dto);
+            return Ok(token);
         }
     }
 }

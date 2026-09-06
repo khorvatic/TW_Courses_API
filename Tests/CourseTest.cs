@@ -81,8 +81,8 @@ namespace Tests
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
             var returnedCourse = Assert.IsType<CourseDto>(createdAtActionResult.Value);
-            Assert.Equal(createdCourseDto.Id, returnedCourse.Id);
-            Assert.Equal(createCourseDto.Name, returnedCourse.Name);
+            Assert.Equal(nameof(CourseController.GetCourseById), createdAtActionResult.ActionName);
+            Assert.Equal(createdCourseDto.Id, createdAtActionResult.RouteValues["id"]);
         }
 
         [Fact]

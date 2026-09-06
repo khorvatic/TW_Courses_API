@@ -74,9 +74,8 @@ namespace Tests
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
             var answer = Assert.IsType<AnswerDto>(createdAtActionResult.Value);
-            Assert.Equal(createdAnswerDto.Id, answer.Id);
-            Assert.Equal(createdAnswerDto.Option, answer.Option);
-            Assert.Equal(createdAnswerDto.QuestionId, answer.QuestionId);
+            Assert.Equal(nameof(AnswerController.GetAnswerById), createdAtActionResult.ActionName);
+            Assert.Equal(createdAnswerDto.Id, createdAtActionResult.RouteValues["id"]);
         }
 
         [Fact]

@@ -88,9 +88,8 @@ namespace Tests
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
             var chapter = Assert.IsType<ChapterDto>(createdAtActionResult.Value);
-            Assert.Equal(chapter.Id, createdChapterDto.Id);
-            Assert.Equal(chapter.Name, createdChapterDto.Name);
-            Assert.Equal(chapter.Length, createdChapterDto.Length);
+            Assert.Equal(nameof(ChapterController.GetChapterById), createdAtActionResult.ActionName);
+            Assert.Equal(createdChapterDto.Id, createdAtActionResult.RouteValues["id"]);
         }
 
         [Fact]

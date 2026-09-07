@@ -2,8 +2,6 @@
 using Application.Interfaces;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters.Xml;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Presentation.Controllers;
 using System;
@@ -134,7 +132,7 @@ namespace Tests
 
             // Act
             var controller = new UserRoleController(mockService.Object);
-            var result = await controller.GetRolesByUserId(roleId);
+            var result = await controller.GetUsersByRoleId(roleId);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);

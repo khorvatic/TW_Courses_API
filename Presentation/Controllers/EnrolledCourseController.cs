@@ -62,7 +62,7 @@ namespace Presentation.Controllers
         public async Task<ActionResult<EnrolledCourseDto>> CompleteEnrolledCourse([FromQuery] int userId, [FromQuery] int courseId)
         {
             var currUserId = User.GetUserId();
-            if (currUserId != userId && !User.IsInRole("Admin"))
+            if (currUserId != userId)
             {
                 return Forbid("You are not authorized to complete this course.");
             }

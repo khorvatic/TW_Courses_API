@@ -121,6 +121,31 @@ namespace Tests
         }
 
         [Fact]
+        public async Task Register_Should_ReturnCreatedAtAction_WhenUserIsCreated()
+        {
+            // Arrange
+            var mockService = new Mock<IUserService>();
+            var createUserDto = new CreateUserDto
+            {
+                Name = "Test",
+                Surname = "User",
+                Email = "test@mail.com"
+            };
+            mockService.Setup(s => s.CreateUserAsync(createUserDto))
+                .ReturnsAsync(new UserDto { Id = 1, Name = "Test", Surname = "User", Email = "test@mail.com" });
+
+            // Act
+            var controller = new UserController(mockService.Object);
+            var result = await controller.Register(createUserDto);
+
+            // Assert
+            var createdAtResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+            var user = Assert.IsType<UserDto>(createdAtResult.Value);
+            Assert.Equal(nameof(UserController.GetUserById), createdAtResult.ActionName);
+            Assert.Equal(1, createdAtResult.RouteValues["id"]);
+        }
+
+        [Fact]
         public async Task GetUserByEmail_Should_ReturnOk_WhenUserExists()
         {
             // Arrange

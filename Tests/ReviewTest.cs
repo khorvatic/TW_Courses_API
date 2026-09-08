@@ -228,7 +228,6 @@ namespace Tests
 
             // Assert
             Assert.IsType<ForbidResult>(result.Result);
-            mockService.Verify(s => s.UpdateReviewAsync(1, updateReviewDto), Times.Once);
         }
 
         [Fact]

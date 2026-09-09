@@ -106,6 +106,13 @@ try
     builder.Services.AddScoped<IUserRoleService, UserRoleService>();
     builder.Services.AddScoped<IAuthService, AuthService>();
 
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend", policy =>
+            policy.WithOrigins("http://localhost:8081")
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+    });
 
     // Serilog configuration
     builder.Services.AddSerilog((services, lc) => lc
@@ -166,6 +173,7 @@ try
     app.UseSerilogRequestLogging();
     app.UseMiddleware<ExceptionHandler>();
 
+    app.UseCors("AllowFrontend");
     app.UseAuthentication();
     app.UseAuthorization();
 

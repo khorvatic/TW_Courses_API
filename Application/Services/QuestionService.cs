@@ -38,12 +38,7 @@ namespace Application.Services
                 Text = question.Text,
                 Type = question.Type,
                 ExamId = question.ExamId,
-                Answers = question.Answers.Select(a => new AnswerDto
-                {
-                    Id = a.Id,
-                    QuestionId = a.QuestionId,
-                    Option = a.Option
-                }).ToList()
+                Answers = new List<AnswerDto>()
             };
         }
 

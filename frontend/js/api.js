@@ -19,6 +19,15 @@
     }
   }
 
+  // A handful of "list by X" endpoints (reviews/course, exam/course, examattempt/exam,
+  // examattempt/user) throw a 404 on the API side when the list would just be empty,
+  // instead of returning 200 with []. Callers of those endpoints use this to turn that
+  // specific 404 back into an empty array so "nothing here yet" doesn't render as an error.
+  function emptyListOn404(err) {
+    if (err instanceof ApiError && err.status === 404) return [];
+    throw err;
+  }
+
   // Flattens ASP.NET ValidationProblemDetails ({errors: {Field: ["msg"]}}) or {message} into one string.
   function extractMessage(data, fallback) {
     if (!data) return fallback;
@@ -133,7 +142,7 @@
     exams: {
       getAll: () => request("/exam"),
       get: (id) => request(`/exam/${id}`),
-      byCourse: (courseId) => request(`/exam/course/${courseId}`),
+      byCourse: (courseId) => request(`/exam/course/${courseId}`).catch(emptyListOn404),
       create: (dto) => request("/exam", { method: "POST", body: dto }),
       update: (id, dto) => request(`/exam/${id}`, { method: "PUT", body: dto }),
       delete: (id) => request(`/exam/${id}`, { method: "DELETE" }),
@@ -156,8 +165,8 @@
     examAttempts: {
       getAll: () => request("/examattempt"),
       get: (id) => request(`/examattempt/${id}`),
-      byExam: (examId) => request(`/examattempt/exam/${examId}`),
-      byUser: (userId) => request(`/examattempt/user/${userId}`),
+      byExam: (examId) => request(`/examattempt/exam/${examId}`).catch(emptyListOn404),
+      byUser: (userId) => request(`/examattempt/user/${userId}`).catch(emptyListOn404),
       create: (dto) => request("/examattempt", { method: "POST", body: dto }),
       submit: (attemptId) => request(`/examattempt/${attemptId}`, { method: "PUT" }),
     },
@@ -169,8 +178,8 @@
     reviews: {
       getAll: () => request("/review"),
       get: (id) => request(`/review/${id}`),
-      byCourse: (courseId) => request(`/review/course/${courseId}`),
-      byUser: (userId) => request(`/review/user/${userId}`),
+      byCourse: (courseId) => request(`/review/course/${courseId}`).catch(emptyListOn404),
+      byUser: (userId) => request(`/review/user/${userId}`).catch(emptyListOn404),
       create: (dto) => request("/review", { method: "POST", body: dto }),
       update: (id, dto) => request(`/review/${id}`, { method: "PUT", body: dto }),
       delete: (id) => request(`/review/${id}`, { method: "DELETE" }),

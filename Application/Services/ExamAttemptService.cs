@@ -68,7 +68,7 @@ namespace Application.Services
         public async Task<ExamAttemptDto> GetExamAttemptByIdAsync(int id)
         {
             var ea = await _unitOfWork.ExamAttempts.GetByIdAsync(id);
-            if (ea == null) throw new ArgumentException("Exam attempt with that ID not found");
+            if (ea == null) throw new NotFoundException("Exam attempt with that ID not found");
 
             return new ExamAttemptDto
             {

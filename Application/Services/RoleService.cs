@@ -41,7 +41,7 @@ namespace Application.Services
         public async Task DeleteRoleByIdAsync(int id)
         {
             var role = await _unitOfWork.Roles.GetByIdAsync(id);
-            if (role != null) throw new NotFoundException("Cannot delete because Role with that ID not found");
+            if (role == null) throw new NotFoundException("Cannot delete because Role with that ID not found");
 
             await _unitOfWork.Roles.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();

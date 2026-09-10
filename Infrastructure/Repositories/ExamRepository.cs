@@ -34,6 +34,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Exams
                 .Include(e => e.Questions)
+                    .ThenInclude(q => q.Answers)
                 .ToListAsync();
         }
 
@@ -41,6 +42,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Exams
                 .Include(e => e.Questions)
+                    .ThenInclude(q => q.Answers)
                 .Where(e => e.CourseId == courseId)
                 .ToListAsync();
         }
@@ -49,6 +51,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Exams
                 .Include(e => e.Questions)
+                    .ThenInclude(q => q.Answers)
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
 
@@ -56,6 +59,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Exams
                 .Include(e => e.Questions)
+                    .ThenInclude(q => q.Answers)
                 .FirstOrDefaultAsync(e => e.Title == title);
         }
 

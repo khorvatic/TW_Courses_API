@@ -58,6 +58,7 @@ namespace Application.Services
                 {
                     Id = q.Id,
                     Type = q.Type,
+                    Text = q.Text,
                     ExamId = q.ExamId,
                     Answers = q.Answers.Select(a => new AnswerDto
                     {
@@ -84,6 +85,7 @@ namespace Application.Services
                 {
                     Id = q.Id,
                     Type = q.Type,
+                    Text = q.Text,
                     ExamId = q.ExamId,
                     Answers = q.Answers.Select(a => new AnswerDto
                     {
@@ -110,6 +112,7 @@ namespace Application.Services
                 {
                     Id = q.Id,
                     Type = q.Type,
+                    Text = q.Text,
                     ExamId = q.ExamId,
                     Answers = q.Answers.Select(a => new AnswerDto
                     {
@@ -137,6 +140,7 @@ namespace Application.Services
                 {
                     Id = q.Id,
                     Type = q.Type,
+                    Text = q.Text,
                     ExamId = q.ExamId,
                     Answers = q.Answers.Select(a => new AnswerDto
                     {
@@ -179,6 +183,7 @@ namespace Application.Services
                 {
                     Id = q.Id,
                     Type = q.Type,
+                    Text = q.Text,
                     ExamId = q.ExamId,
                     Answers = q.Answers.Select(a => new AnswerDto
                     {

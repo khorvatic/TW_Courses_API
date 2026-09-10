@@ -40,7 +40,8 @@ namespace Application.Services
             {
                 Id = course.Id,
                 Name = course.Name,
-                TimeToComplete = course.TimeToComplete
+                TimeToComplete = course.TimeToComplete,
+                Chapters = new List<ChapterDto>()
             };
         }
 

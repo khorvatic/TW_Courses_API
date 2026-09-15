@@ -41,15 +41,6 @@ namespace Application.Services
             };
         }
 
-        public async Task DeleteExamAttemptAsync(int id)
-        {
-            var ea = await _unitOfWork.ExamAttempts.GetByIdAsync(id);
-            if (ea ==null) throw new NotFoundException("Cannot delete because Exam attempt with that ID not found");
-
-            await _unitOfWork.ExamAttempts.DeleteAsync(id);
-            await _unitOfWork.SaveChangesAsync();
-        }
-
         public async Task<IEnumerable<ExamAttemptDto>> GetAllExamAttemptsAsync()
         {
             var examAttempts = await _unitOfWork.ExamAttempts.GetAllAsync();

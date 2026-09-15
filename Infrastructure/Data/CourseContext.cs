@@ -84,6 +84,17 @@ namespace Infrastructure.Data
                 .WithOne(q => q.Exam)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Exam>()
+                .HasMany(e => e.Attempts)
+                .WithOne(ea => ea.Exam)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // --- Question ---
+            modelBuilder.Entity<Question>()
+                .HasMany(q => q.Answers)
+                .WithOne(a => a.Question)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // --- Role ---
             modelBuilder.Entity<Role>()
                 .HasData(
